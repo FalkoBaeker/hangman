@@ -311,5 +311,23 @@ button.fail::before {
     cursor: not-allowed;
 }
 
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 1440px) {
+    .header {
+        max-width: 790px;
+    }
+    #hangman {
+        width: 10rem;
+    }
+}
+@media screen and (max-width: 768px) {
+    .title {
+        font-size: 3.5rem;
+    }
+    .sub-title {
+        font-size: 1rem;
+    }
+    .keyboard button {
+        width: 55px;
+        height: 55px;
+    }
 }
