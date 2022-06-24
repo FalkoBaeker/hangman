@@ -125,7 +125,10 @@ let dupWord = [];
 let word = [];
 let tries = 0;
 let totalTries = null;
-let notFirstTime = false;
+let firstTime = true;
+
+// Modals
+const hintModal = document.querySelector("#modal-hint");
 
 // starting script
 disableBtns();
@@ -203,10 +206,9 @@ function genWrdBlocks() {
 // =========================================
 
 function hint() {
-    if (!notFirstTime) {
-        notFirstTime = confirm("A hint takes 2 tries. Are you sure?");
-    }
-    if (tries >= 2 && notFirstTime) {
+    if (firstTime) {
+        openHint();
+    } else if (tries > 2 && !firstTime) {
         let arr = [];
         blocks.forEach((block) => {
             if (!block.classList.contains("visible")) {
@@ -218,7 +220,7 @@ function hint() {
         document.querySelector(".tries").innerHTML = `tries: ${tries}`;
         setImg();
         winLose();
-    } else if (tries === 0) {
+    } else if (tries <= 2) {
         alert("you don't have enough tries");
     }
 }
@@ -313,4 +315,21 @@ function winLose() {
         resetAll();
         disableBtns();
     }
+}
+
+// ================== Modal Functions =====================
+// Modal Toggle
+function openHint() {
+    hintModal.showModal();
+}
+function closeHint() {
+    hintModal.close();
+}
+// Modal Actions
+
+function setFirtTimeFalse() {
+    /** on taking hint */
+    firstTime = false;
+    closeHint();
+    hint();
 }

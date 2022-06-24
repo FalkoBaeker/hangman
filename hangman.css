@@ -320,7 +320,7 @@ button.fail::before {
     font-family: sans-serif;
     width: 400px;
     padding: 1rem;
-    border: 2px solid #39475d;
+    border: 3px solid #39475d;
     border-radius: 4px;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
@@ -351,6 +351,8 @@ button.fail::before {
     font-size: 15px;
 }
 .hint-btn > * {
+    cursor: pointer;
+    border: 2px solid #7b8493;
     padding: 0.25rem 0.5rem;
     flex: 1;
 }
