@@ -31,6 +31,7 @@ button {
 }
 body {
     background-color: #23324b;
+    position: relative;
 }
 
 /* header */
@@ -309,6 +310,49 @@ button.fail::before {
     -ms-transform: scale(0.94);
     -o-transform: scale(0.94);
     cursor: not-allowed;
+}
+
+/* Modals */
+.modal {
+    position: absolute;
+    background-color: #d3d6db;
+    color: #0e141e;
+    font-family: sans-serif;
+    width: 400px;
+    padding: 1rem;
+    border: 2px solid #39475d;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -ms-transform: translateX(-50%) translateY(-50%);
+    -o-transform: translateX(-50%) translateY(-50%);
+}
+.modal > * + * {
+    margin-top: 0.75em;
+}
+.modal::backdrop {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Hint Modal */
+.modal-hint p {
+    color: #4f5b6f;
+}
+.hint-btn {
+    display: flex;
+    gap: 0.25rem;
+    font-size: 15px;
+}
+.hint-btn > * {
+    padding: 0.25rem 0.5rem;
+    flex: 1;
 }
 
 @media screen and (max-width: 1440px) {

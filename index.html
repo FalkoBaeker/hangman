@@ -68,7 +68,21 @@
             >
                 <i>start Game</i>
             </button>
-            <button class="hint" onclick="hint()"><i>Hint</i></button>
+            <button class="hint" onclick="hint()" id="hint">
+                <i>Hint</i>
+            </button>
         </div>
+        <button class="open-button">open</button>
+
+        <!-- Modals -->
+        <!-- Hint Modal -->
+        <dialog class="modal modal-hint" id="modal-hint">
+            <h3>Taking a hint costs 2 tries</h3>
+            <p>Are you sure to make the trade?🤔</p>
+            <div class="hint-btn">
+                <button>Nah, I'll figure it out myself🙄</button>
+                <button class="close-button">Yeah sure😇</button>
+            </div>
+        </dialog>
     </body>
 </html>
