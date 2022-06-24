@@ -438,8 +438,7 @@ function getRnd(min, max) {
 }
 
 function getRndWord() {
-    // let word = words[getRnd(0, words.length - 1)].split("");
-    let word = ["a"];
+    let word = words[getRnd(0, words.length - 1)].split("");
     return word;
 }
 
