@@ -48,7 +48,6 @@ body {
 
 /* titles */
 .title {
-    text-align: center;
     font-family: cheri;
     font-size: 4rem;
     color: #e5e7eb;
@@ -56,12 +55,16 @@ body {
 }
 
 .sub-title {
-    text-align: center;
     color: #c2c2c2;
     font-family: segoe;
     font-size: 1.2rem;
     line-height: 1.3;
     margin-bottom: 1rem;
+}
+.title,
+.sub-title {
+    text-align: center;
+    user-select: none;
 }
 /* main */
 .main {
@@ -87,6 +90,7 @@ body {
     font-family: segoe;
     color: #fff;
     text-align: center;
+    user-select: none;
 }
 .inner-main {
     position: absolute;
