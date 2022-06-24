@@ -371,6 +371,7 @@ let tries_div = document.querySelector(".tries");
 let start_button = document.querySelector("#start");
 let main_div = document.querySelector(".inner-main");
 let img = document.querySelector("#hangman");
+let startGame = document.querySelector("#start-game");
 let blocks = null;
 let dupWord = [];
 let word = [];
@@ -483,6 +484,7 @@ function hint() {
 function resetAll() {
     tries = 0;
     document.querySelector(".tries").innerHTML = "tries";
+    startGame.innerHTML = "Play Again";
     img.src = "./assets/images/0.jpg";
     word = [];
     dupWord = [];
