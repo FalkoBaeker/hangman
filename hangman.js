@@ -116,6 +116,7 @@ let words = [
     "zero",
 ];
 
+// ================= Confetti Code by CoderZ90 ==================
 var confetti = {
     maxCount: 1550, //set max confetti count
     speed: 2, //set the particle animation speed
