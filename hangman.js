@@ -131,6 +131,8 @@ let firstTime = true;
 const hintModal = document.querySelector("#modal-hint");
 const tries0Modal = document.querySelector("#modal-tries0");
 const winModal = document.querySelector("#modal-win");
+const loseModal = document.querySelector("#modal-lose");
+const secretWord = document.querySelector("#secret-word");
 
 // starting script
 disableBtns();
@@ -303,13 +305,14 @@ function enableBtns() {
 
 function winLose() {
     if (tries === 0) {
-        alert(
-            `Unfortunately you lost the game, secret word was "${dupWord.join(
-                ""
-            )}" play again`
-        );
+        secretWord.innerHTML = `secret word was "${dupWord.join("")}"`;
+        openLose();
+        // alert(`Unfortunately you lost the game, secret word was  play again`);
         resetAll();
         disableBtns();
+        setTimeout(() => {
+            closeLose();
+        }, 1500);
     } else if (
         document.querySelectorAll(".visible").length === dupWord.length
     ) {
@@ -341,6 +344,12 @@ function openWin() {
 }
 function closeWin() {
     winModal.close();
+}
+function openLose() {
+    loseModal.showModal();
+}
+function closeLose() {
+    loseModal.close();
 }
 // Modal Actions
 
