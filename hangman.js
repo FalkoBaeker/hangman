@@ -129,6 +129,7 @@ let firstTime = true;
 
 // Modals
 const hintModal = document.querySelector("#modal-hint");
+const tries0Modal = document.querySelector("#modal-tries0");
 
 // starting script
 disableBtns();
@@ -206,7 +207,7 @@ function genWrdBlocks() {
 // =========================================
 
 function hint() {
-    if (firstTime) {
+    if (firstTime && tries > 2) {
         openHint();
     } else if (tries > 2 && !firstTime) {
         let arr = [];
@@ -221,7 +222,7 @@ function hint() {
         setImg();
         winLose();
     } else if (tries <= 2) {
-        alert("you don't have enough tries");
+        tries0();
     }
 }
 
@@ -325,6 +326,12 @@ function openHint() {
 function closeHint() {
     hintModal.close();
 }
+function openTries0() {
+    tries0Modal.showModal();
+}
+function closeTries0() {
+    tries0Modal.close();
+}
 // Modal Actions
 
 function setFirtTimeFalse() {
@@ -332,4 +339,12 @@ function setFirtTimeFalse() {
     firstTime = false;
     closeHint();
     hint();
+}
+
+function tries0() {
+    // when player has not enough tries
+    openTries0();
+    setTimeout(() => {
+        closeTries0();
+    }, 1000);
 }
