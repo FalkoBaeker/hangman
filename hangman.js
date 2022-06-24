@@ -130,6 +130,7 @@ let firstTime = true;
 // Modals
 const hintModal = document.querySelector("#modal-hint");
 const tries0Modal = document.querySelector("#modal-tries0");
+const winModal = document.querySelector("#modal-win");
 
 // starting script
 disableBtns();
@@ -312,9 +313,12 @@ function winLose() {
     } else if (
         document.querySelectorAll(".visible").length === dupWord.length
     ) {
-        alert("Congratulations, You won the game");
+        openWin();
         resetAll();
         disableBtns();
+        setTimeout(() => {
+            closeWin();
+        }, 1500);
     }
 }
 
@@ -331,6 +335,12 @@ function openTries0() {
 }
 function closeTries0() {
     tries0Modal.close();
+}
+function openWin() {
+    winModal.showModal();
+}
+function closeWin() {
+    winModal.close();
 }
 // Modal Actions
 
