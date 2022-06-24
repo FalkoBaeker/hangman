@@ -337,6 +337,9 @@ button.fail::before {
 .modal > * + * {
     margin-top: 0.75em;
 }
+.modal > * {
+    user-select: none;
+}
 .modal::backdrop {
     background-color: rgba(0, 0, 0, 0.4);
 }
