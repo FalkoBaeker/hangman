@@ -356,7 +356,10 @@ button.fail::before {
     padding: 0.25rem 0.5rem;
     flex: 1;
 }
-
+/* Win Modal */
+.modal-win::backdrop {
+    background-color: transparent;
+}
 @media screen and (max-width: 1440px) {
     .header {
         max-width: 790px;
