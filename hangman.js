@@ -508,17 +508,17 @@ function clearMainDiv() {
 function setImg() {
     let percent = (tries / totalTries) * 100;
     if (percent > 71.5 && percent <= 87.75) {
-        img.src = "./assets/images/1.jpg";
+        img.src = "./assets/images/1.png";
     } else if (percent > 57.25 && percent <= 71.5) {
-        img.src = "./assets/images/2.jpg";
+        img.src = "./assets/images/2.png";
     } else if (percent > 43 && percent <= 57.25) {
-        img.src = "./assets/images/3.jpg";
+        img.src = "./assets/images/3.png";
     } else if (percent > 28.75 && percent <= 43) {
-        img.src = "./assets/images/4.jpg";
+        img.src = "./assets/images/4.png";
     } else if (percent > 14.5 && percent <= 28.75) {
-        img.src = "./assets/images/5.jpg";
+        img.src = "./assets/images/5.png";
     } else if (percent <= 14.5) {
-        img.src = "./assets/images/6.jpg";
+        img.src = "./assets/images/6.png";
     }
 }
 
