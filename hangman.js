@@ -366,12 +366,15 @@ var confetti = {
 })();
 
 // ============================================================
+// Changing height of main div on 768px if letters exceeds 7
+const winWidth = window.innerWidth;
 
-let tries_div = document.querySelector(".tries");
-let start_button = document.querySelector("#start");
-let main_div = document.querySelector(".inner-main");
-let img = document.querySelector("#hangman");
-let startGame = document.querySelector("#start-game");
+const tries_div = document.querySelector(".tries");
+const start_button = document.querySelector("#start");
+const main = document.querySelector(".main");
+const main_div = document.querySelector(".inner-main");
+const img = document.querySelector("#hangman");
+const startGame = document.querySelector("#start-game");
 let blocks = null;
 let dupWord = [];
 let word = [];
@@ -439,7 +442,11 @@ function getRnd(min, max) {
 }
 
 function getRndWord() {
-    let word = words[getRnd(0, words.length - 1)].split("");
+    // let word = words[getRnd(0, words.length - 1)].split("");
+    let word = "hellllo".split("");
+    if (word.length >= 7 && winWidth <= 768) {
+        main.style.height = "140px";
+    }
     return word;
 }
 

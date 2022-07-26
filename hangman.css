@@ -33,12 +33,19 @@ body {
     background-color: #23324b;
     position: relative;
 }
+.caution {
+    color: red;
+    margin: 4px;
+    font-size: 1.3rem;
+    display: none;
+}
 
 /* header */
 .header {
     max-width: 890px;
+    margin-block: 30px;
     padding-inline: 20px;
-    margin: 0 auto;
+    margin-inline: auto;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
 }
@@ -73,25 +80,6 @@ body {
     position: relative;
 }
 
-.tries-cont {
-    height: 50px;
-    position: relative;
-}
-.tries {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateY(-50%) translateX(-50%);
-    -webkit-transform: translateY(-50%) translateX(-50%);
-    -moz-transform: translateY(-50%) translateX(-50%);
-    -ms-transform: translateY(-50%) translateX(-50%);
-    -o-transform: translateY(-50%) translateX(-50%);
-    font-size: 2rem;
-    font-family: segoe;
-    color: #fff;
-    text-align: center;
-    user-select: none;
-}
 .inner-main {
     position: absolute;
     top: 50%;
@@ -104,6 +92,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
     gap: 1rem;
 }
 .main-block {
@@ -143,6 +132,25 @@ body {
 }
 .main-block.visible {
     color: #fff;
+}
+.tries-cont {
+    height: 50px;
+    position: relative;
+}
+.tries {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    -webkit-transform: translateY(-50%) translateX(-50%);
+    -moz-transform: translateY(-50%) translateX(-50%);
+    -ms-transform: translateY(-50%) translateX(-50%);
+    -o-transform: translateY(-50%) translateX(-50%);
+    font-size: 2rem;
+    font-family: segoe;
+    color: #fff;
+    text-align: center;
+    user-select: none;
 }
 
 /* keyboard */
@@ -370,6 +378,7 @@ button.fail::before {
 @media screen and (max-width: 1440px) {
     .header {
         max-width: 790px;
+        margin-block: 25px;
     }
     #hangman {
         width: 10rem;
@@ -385,5 +394,26 @@ button.fail::before {
     .keyboard button {
         width: 55px;
         height: 55px;
+    }
+}
+@media screen and (max-width: 500px) {
+    .caution {
+        display: block;
+    }
+    .header {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .title-cont {
+        grid-row: 1 /2;
+    }
+    .title {
+        font-size: 3rem;
+    }
+    .sub-title {
+        font-size: 1rem;
+    }
+    #hangman {
+        place-self: center;
     }
 }
