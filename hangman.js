@@ -366,7 +366,7 @@ var confetti = {
 })();
 
 // ============================================================
-// Changing height of main div on 768px if letters exceeds 7
+// Changing height of main div in getRndWord on w=768px if letters exceeds 7
 const winWidth = window.innerWidth;
 
 const tries_div = document.querySelector(".tries");
