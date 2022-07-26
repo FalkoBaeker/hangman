@@ -492,7 +492,7 @@ function resetAll() {
     tries = 0;
     document.querySelector(".tries").innerHTML = "tries";
     startGame.innerHTML = "Play Again";
-    img.src = "./assets/images/0.jpg";
+    img.src = "./assets/images/0.png";
     word = [];
     dupWord = [];
     clearFails();
