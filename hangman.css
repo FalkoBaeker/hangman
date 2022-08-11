@@ -375,6 +375,20 @@ button.fail::before {
 .modal-win::backdrop {
     background-color: transparent;
 }
+
+/* About button and modal */
+.open-about {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    /* position */
+    position: fixed;
+    top: 15px;
+    right: 25px;
+}
+.modal-about {
+    text-align: center;
+}
 @media screen and (max-width: 1440px) {
     .header {
         max-width: 790px;

@@ -388,6 +388,7 @@ const tries0Modal = document.querySelector("#modal-tries0");
 const winModal = document.querySelector("#modal-win");
 const loseModal = document.querySelector("#modal-lose");
 const secretWord = document.querySelector("#secret-word");
+const aboutModal = document.querySelector("#modal-about");
 
 // starting script
 disableBtns();
@@ -612,6 +613,12 @@ function openLose() {
 }
 function closeLose() {
     loseModal.close();
+}
+function openAbout() {
+    aboutModal.showModal();
+}
+function closeAbout() {
+    aboutModal.close();
 }
 // Modal Actions
 
