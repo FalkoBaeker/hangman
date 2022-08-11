@@ -112,11 +112,47 @@
         </button>
         <dialog class="modal modal-about" id="modal-about">
             <h4>Hangman</h4>
-            <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Ratione, maiores!
+            <p class="lead">
+                A popular word guessing game where the player attempts to build
+                a missing word by guessing one letter at a time within finite
+                number of attempts
             </p>
-            <button class="close-button" onclick="closeAbout()">close</button>
+            <div class="about-icon-container">
+                <span>TechStack:</span>
+                <img
+                    src="./assets/images/icons8-html-5-48.png"
+                    alt="html-icon-icon8"
+                /><img
+                    src="./assets/images/icons8-css3-48.png"
+                    alt="css-icon-icon8"
+                /><img
+                    src="./assets/images/icons8-javascript-48.png"
+                    alt="js-icon-icon8"
+                />
+            </div>
+            <div class="about-links">
+                <p>
+                    Code on
+                    <a
+                        href="https://github.com/yousafsabir/hangman"
+                        target="_blank"
+                        >Github</a
+                    >
+                </p>
+                <p>
+                    Confetti by
+                    <a href="https://github.com/CoderZ90" target="_blank"
+                        >CoderZ90</a
+                    >
+                </p>
+            </div>
+            <button
+                class="close-about"
+                style="padding-inline: 4px; cursor: pointer"
+                onclick="closeAbout()"
+            >
+                close
+            </button>
         </dialog>
     </body>
 </html>

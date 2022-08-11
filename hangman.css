@@ -389,6 +389,41 @@ button.fail::before {
 .modal-about {
     text-align: center;
 }
+.modal-about h4 {
+    /* Modal Title */
+    font-family: cheri;
+    font-size: 2rem;
+    color: hsl(217, 24%, 25%);
+    letter-spacing: 4px;
+}
+.modal-about .lead {
+    /* Modal Para */
+    font-size: 0.8rem;
+    color: hsl(217, 24%, 35%);
+    text-align: left;
+    margin-left: 4px;
+    line-height: 1.5;
+}
+.about-icon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    color: hsl(217, 24%, 30%);
+}
+.about-icon-container img {
+    width: 34px;
+}
+.about-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.9rem;
+}
+.about-links a {
+    text-decoration: none;
+}
 @media screen and (max-width: 1440px) {
     .header {
         max-width: 790px;
