@@ -39,44 +39,91 @@
         </div>
 
         <div class="keyboard">
-            <button id="a" onclick="play(this.id)"><i>a</i></button>
-            <button id="b" onclick="play(this.id)"><i>b</i></button>
-            <button id="c" onclick="play(this.id)"><i>c</i></button>
-            <button id="d" onclick="play(this.id)"><i>d</i></button>
-            <button id="e" onclick="play(this.id)"><i>e</i></button>
-            <button id="f" onclick="play(this.id)"><i>f</i></button>
-            <button id="g" onclick="play(this.id)"><i>g</i></button>
-            <button id="h" onclick="play(this.id)"><i>h</i></button>
-            <button id="i" onclick="play(this.id)"><i>i</i></button>
-            <button id="j" onclick="play(this.id)"><i>j</i></button>
-            <button id="k" onclick="play(this.id)"><i>k</i></button>
-            <button id="l" onclick="play(this.id)"><i>l</i></button>
-            <button id="m" onclick="play(this.id)"><i>m</i></button>
-            <button id="n" onclick="play(this.id)"><i>n</i></button>
-            <button id="o" onclick="play(this.id)"><i>o</i></button>
-            <button id="p" onclick="play(this.id)"><i>p</i></button>
-            <button id="q" onclick="play(this.id)"><i>q</i></button>
-            <button id="r" onclick="play(this.id)"><i>r</i></button>
-            <button id="s" onclick="play(this.id)"><i>s</i></button>
-            <button id="t" onclick="play(this.id)"><i>t</i></button>
-            <button id="u" onclick="play(this.id)"><i>u</i></button>
-            <button id="v" onclick="play(this.id)"><i>v</i></button>
-            <button id="w" onclick="play(this.id)"><i>w</i></button>
-            <button id="x" onclick="play(this.id)"><i>x</i></button>
-            <button id="y" onclick="play(this.id)"><i>y</i></button>
-            <button id="z" onclick="play(this.id)"><i>z</i></button>
+            <button id="a" class="keyboard-btn">
+                <i>a</i>
+            </button>
+            <button id="b" class="keyboard-btn">
+                <i>b</i>
+            </button>
+            <button id="c" class="keyboard-btn">
+                <i>c</i>
+            </button>
+            <button id="d" class="keyboard-btn">
+                <i>d</i>
+            </button>
+            <button id="e" class="keyboard-btn">
+                <i>e</i>
+            </button>
+            <button id="f" class="keyboard-btn">
+                <i>f</i>
+            </button>
+            <button id="g" class="keyboard-btn">
+                <i>g</i>
+            </button>
+            <button id="h" class="keyboard-btn">
+                <i>h</i>
+            </button>
+            <button id="i" class="keyboard-btn">
+                <i>i</i>
+            </button>
+            <button id="j" class="keyboard-btn">
+                <i>j</i>
+            </button>
+            <button id="k" class="keyboard-btn">
+                <i>k</i>
+            </button>
+            <button id="l" class="keyboard-btn">
+                <i>l</i>
+            </button>
+            <button id="m" class="keyboard-btn">
+                <i>m</i>
+            </button>
+            <button id="n" class="keyboard-btn">
+                <i>n</i>
+            </button>
+            <button id="o" class="keyboard-btn">
+                <i>o</i>
+            </button>
+            <button id="p" class="keyboard-btn">
+                <i>p</i>
+            </button>
+            <button id="q" class="keyboard-btn">
+                <i>q</i>
+            </button>
+            <button id="r" class="keyboard-btn">
+                <i>r</i>
+            </button>
+            <button id="s" class="keyboard-btn">
+                <i>s</i>
+            </button>
+            <button id="t" class="keyboard-btn">
+                <i>t</i>
+            </button>
+            <button id="u" class="keyboard-btn">
+                <i>u</i>
+            </button>
+            <button id="v" class="keyboard-btn">
+                <i>v</i>
+            </button>
+            <button id="w" class="keyboard-btn">
+                <i>w</i>
+            </button>
+            <button id="x" class="keyboard-btn">
+                <i>x</i>
+            </button>
+            <button id="y" class="keyboard-btn">
+                <i>y</i>
+            </button>
+            <button id="z" class="keyboard-btn">
+                <i>z</i>
+            </button>
         </div>
 
         <div class="start">
-            <button
-                type="button"
-                id="start"
-                onclick="start()"
-                class="start-button"
-            >
+            <button type="button" id="start" class="start-button">
                 <i id="start-game">start Game</i>
             </button>
-            <button class="hint" onclick="hint()" id="hint">
+            <button class="hint" id="hint">
                 <i>Hint</i>
             </button>
         </div>
@@ -87,12 +134,10 @@
             <h3>Taking a hint costs 2 tries</h3>
             <p>Are you sure to make the trade?🤔</p>
             <div class="hint-btn">
-                <button onclick="closeHint()">
+                <button id="close-hint">
                     Nah🙄, I'll figure it out myself
                 </button>
-                <button class="close-button" onclick="setFirtTimeFalse()">
-                    Yeah sure😇
-                </button>
+                <button class="close-button" id="take-hint">Yeah sure😇</button>
             </div>
         </dialog>
         <!-- Not enough tries modal -->
@@ -113,7 +158,7 @@
 
         <!-- About Modal -->
 
-        <button class="open-about" onclick="openAbout()">
+        <button class="open-about" id="open-about">
             <img src="./assets/images/about.png" alt="about-icon-icons8" />
         </button>
         <dialog class="modal modal-about" id="modal-about">
@@ -152,7 +197,7 @@
                     >
                 </p>
             </div>
-            <button class="close-about" onclick="closeAbout()">
+            <button class="close-about" id="close-about">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-5 w-5"

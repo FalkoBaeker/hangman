@@ -369,6 +369,12 @@ var confetti = {
 // Changing height of main div in getRndWord on w=768px if letters exceeds 7
 const winWidth = window.innerWidth;
 
+// adding listener to each key
+let keyboardBtns = document.querySelectorAll(".keyboard-btn");
+keyboardBtns.forEach((key) => {
+    key.addEventListener("click", () => play(key.getAttribute("id")));
+});
+
 const tries_div = document.querySelector(".tries");
 const start_button = document.querySelector("#start");
 const main = document.querySelector(".main");
@@ -393,14 +399,14 @@ const aboutModal = document.querySelector("#modal-about");
 // starting script
 disableBtns();
 
-function start() {
+start_button.addEventListener("click", () => {
     disableStart();
     enableBtns();
     clearFails();
     clearMainDiv();
     genWrdBlocks();
     setTries();
-}
+});
 
 function play(id) {
     if (tries > 0) {
@@ -468,6 +474,7 @@ function genWrdBlocks() {
 
 // =========================================
 
+document.querySelector("#hint").addEventListener("click", hint);
 function hint() {
     if (firstTime && tries > 2) {
         openHint();
@@ -593,6 +600,7 @@ function winLose() {
 function openHint() {
     hintModal.showModal();
 }
+document.querySelector("#close-hint").addEventListener("click", closeHint);
 function closeHint() {
     hintModal.close();
 }
@@ -614,14 +622,17 @@ function openLose() {
 function closeLose() {
     loseModal.close();
 }
-function openAbout() {
+document.querySelector("#open-about").addEventListener("click", () => {
     aboutModal.showModal();
-}
-function closeAbout() {
+});
+document.querySelector("#close-about").addEventListener("click", () => {
     aboutModal.close();
-}
+});
 // Modal Actions
 
+document
+    .querySelector("#take-hint")
+    .addEventListener("click", setFirtTimeFalse);
 function setFirtTimeFalse() {
     /** on taking hint */
     firstTime = false;
