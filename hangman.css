@@ -43,7 +43,7 @@ body {
 /* header */
 .header {
     max-width: 890px;
-    margin-block: 30px;
+    padding-block: 30px;
     padding-inline: 20px;
     margin-inline: auto;
     display: grid;
