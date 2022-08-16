@@ -336,7 +336,22 @@ function winLose() {
     } else if (
         document.querySelectorAll(".visible").length === dupWord.length
     ) {
-        confetti({ particleCount: 200, spread: 100, scalar: 1.175 });
+        confetti({
+            particleCount: 200,
+            scalar: 1.175,
+            angle: 60,
+            gravity: 0.75,
+            spread: 70,
+            origin: { x: 0 },
+        });
+        confetti({
+            particleCount: 200,
+            scalar: 1.175,
+            angle: 120,
+            gravity: 0.75,
+            spread: 70,
+            origin: { x: 1 },
+        });
         openWin();
         resetAll();
         disableBtns();
