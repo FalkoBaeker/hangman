@@ -27,14 +27,14 @@ const startButton = document.querySelector("#start");
 const main = document.querySelector(".main");
 const mainDiv = document.querySelector(".inner-main");
 const img = document.querySelector("#hangman");
-const startGame = document.querySelector("#start-game");
+const hintButton = document.querySelector("#hint"); // Cached for easier access
+
 const hintModal = document.querySelector("#modal-hint");
 const tries0Modal = document.querySelector("#modal-tries0");
 const winModal = document.querySelector("#modal-win");
 const loseModal = document.querySelector("#modal-lose");
 const secretWord = document.querySelector("#secret-word");
 const aboutModal = document.querySelector("#modal-about");
-const hintButton = document.querySelector("#hint"); // Cached for easier access
 
 // Game State Variables
 let blocks = null; // DOM elements representing each letter block
@@ -48,26 +48,42 @@ let firstTime = true; // Indicates if it's the first hint
 disableBtns();
 
 // Add event listeners to letter buttons
-keyboardBtns.forEach((key) => {
-    const letter = key.getAttribute("id").toLowerCase(); // Ensure lowercase
-    key.addEventListener("click", () => handleLetterClick(letter));
+keyboardBtns.forEach((button) => {
+    const letter = button.getAttribute("id").toLowerCase(); // Ensure lowercase
+    if (!letter || !/^[a-z]$/.test(letter)) {
+        console.warn(`Button with ID '${button.getAttribute("id")}' does not have a valid lowercase letter ID.`);
+    }
+    button.addEventListener("click", () => handleLetterClick(letter, button));
 });
 
 // Add event listener to the start button
 startButton.addEventListener("click", startNewGame);
 
+// Add event listener to the about button
+document.querySelector("#open-about").addEventListener("click", () => {
+    aboutModal.showModal();
+    console.log("About modal opened.");
+});
+
+// Add event listener to close about modal
+document.querySelector("#close-about").addEventListener("click", () => {
+    aboutModal.close();
+    console.log("About modal closed.");
+});
+
+// Add event listener to the take-hint button in the hint modal
+document.querySelector("#take-hint").addEventListener("click", applyHint);
+
 // Function to handle letter button clicks
-function handleLetterClick(letter) {
-    // Debugging: Log the clicked letter and current state
+function handleLetterClick(letter, button) {
     console.log(`Clicked letter: ${letter}`);
-    console.log(`Remaining letters:`, Array.from(remainingLetters));
-    console.log(`Tries left: ${tries}`);
+    if (tries <= 0 || remainingLetters.size === 0) {
+        console.log("Game is over. Click start to play again.");
+        return; // Prevent actions if game over
+    }
 
-    if (tries <= 0 || remainingLetters.size === 0) return; // Prevent actions if game over
-
-    const button = document.querySelector(`#${letter}`);
-    if (!button) {
-        console.error(`Button with ID '${letter}' not found.`);
+    if (!letter) {
+        console.error("Invalid letter.");
         return;
     }
 
@@ -86,7 +102,7 @@ function handleLetterClick(letter) {
 
         // Remove the letter from remainingLetters to prevent further matches
         remainingLetters.delete(letter);
-        console.log(`Letter '${letter}' is a match! Revealed ${lettersRevealed} instances.`);
+        console.log(`Letter '${letter}' is a match! Revealed ${lettersRevealed} instance(s).`);
     } else {
         // Handle incorrect guess
         button.classList.add("fail");
@@ -99,6 +115,7 @@ function handleLetterClick(letter) {
     // Disable the button after click
     button.disabled = true;
     button.classList.add('disabled');
+    console.log(`Button for letter '${letter}' has been disabled.`);
 
     // Check win or lose conditions
     checkWinLose();
@@ -148,6 +165,7 @@ function generateWordBlocks() {
     });
 
     blocks = document.querySelectorAll(".main-block");
+    console.log("Word blocks generated.");
 }
 
 // Utility Functions
@@ -169,11 +187,10 @@ function getRndWord() {
 // Function to update the tries display
 function updateTriesDisplay() {
     triesDiv.innerHTML = `Tries: ${tries} out of ${totalTries} tries left`;
+    console.log(`Tries display updated: ${tries} out of ${totalTries}`);
 }
 
 // Function to handle hints
-hintButton.addEventListener("click", handleHint);
-
 function handleHint() {
     if (tries <= 0 || remainingLetters.size === 0) {
         console.log("Cannot take a hint. Either game is over or no letters left to guess.");
@@ -197,14 +214,24 @@ function handleHint() {
 
 // Function to reveal a random hidden letter
 function revealRandomLetter() {
-    // Filter remaining letters to ensure we pick only from them
+    // Select a random letter from remainingLetters
     const availableLetters = Array.from(remainingLetters);
-    if (availableLetters.length === 0) return;
+    if (availableLetters.length === 0) {
+        console.log("No available letters to reveal.");
+        return;
+    }
 
     const randomIndex = getRnd(0, availableLetters.length - 1);
     const randomLetter = availableLetters[randomIndex];
     console.log(`Revealing random letter: '${randomLetter}'`);
-    handleLetterClick(randomLetter);
+
+    // Find the button corresponding to the randomLetter
+    const button = document.querySelector(`.keyboard-btn#${randomLetter}`);
+    if (button && !button.disabled) {
+        handleLetterClick(randomLetter, button);
+    } else {
+        console.warn(`Button for letter '${randomLetter}' not found or already disabled.`);
+    }
 }
 
 // Function to set the initial number of tries
@@ -412,20 +439,7 @@ function closeLoseModal() {
     console.log("Lose modal closed.");
 }
 
-// Function to open about modal
-document.querySelector("#open-about").addEventListener("click", () => {
-    aboutModal.showModal();
-    console.log("About modal opened.");
-});
-
-// Function to close about modal
-document.querySelector("#close-about").addEventListener("click", () => {
-    aboutModal.close();
-    console.log("About modal closed.");
-});
-
 // Function to handle taking a hint
-document.querySelector("#take-hint").addEventListener("click", applyHint);
 function applyHint() {
     console.log("Applying hint.");
     firstTime = false;
@@ -435,6 +449,3 @@ function applyHint() {
     updateTriesDisplay();
     updateHangmanImage();
 }
-
-// ============================================================
-// End of Hangman Game Code
