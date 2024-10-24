@@ -251,7 +251,7 @@ function hint() {
 
 function resetAll() {
     tries = 0;
-    document.querySelector(".tries").innerHTML = "tries";
+    document.querySelector(".tries").innerHTML = "";
     startGame.innerHTML = "Play Again";
     img.src = "./assets/images/0.png";
     word = [];
