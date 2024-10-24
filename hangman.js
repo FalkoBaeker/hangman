@@ -357,9 +357,13 @@ function winLose() {
         resetAll();
         disableBtns();
         setTimeout(() => {
-    document.querySelector(".tries").innerHTML = "";  // Add this line
+    const triesElement = document.querySelector(".tries");
+    if (triesElement) {
+        triesElement.style.display = "none"; // Hide the element
+    }
     closeWin();
 }, 3000);
+
     }
 }
 
