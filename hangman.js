@@ -38,17 +38,17 @@ const aboutModal = document.querySelector("#modal-about");
 // Game State Variables
 let blocks = null;
 let dupWord = [];
-let currentWord = [];
+let word = [];
 let tries = 0;
 let totalTries = 0;
 let firstTime = true;
 
-// Initialize the game by disabling buttons
+// Initial Setup: Disable all letter buttons and the hint button
 disableBtns();
 
 // Add event listeners to letter buttons
 keyboardBtns.forEach((key) => {
-    key.addEventListener("click", () => play(key.getAttribute("id")));
+    key.addEventListener("click", () => play(key.getAttribute("id").toLowerCase()));
 });
 
 // Add event listener to the start button
@@ -57,7 +57,7 @@ startButton.addEventListener("click", () => {
     enableBtns();
     clearFails();
     clearMainDiv();
-    genWordBlocks();
+    genWrdBlocks();
     setTries();
 });
 
@@ -65,7 +65,7 @@ startButton.addEventListener("click", () => {
 function play(id) {
     if (tries > 0) {
         const button = document.querySelector(`#${id}`);
-        const isMatch = currentWord.includes(id);
+        const isMatch = word.includes(id);
         let revealed = false;
 
         if (isMatch) {
@@ -77,8 +77,8 @@ function play(id) {
                 }
             });
 
-            // Remove all instances from currentWord to prevent further matches
-            currentWord = currentWord.filter(letter => letter !== id);
+            // Remove all instances of the letter from 'word' to prevent further matches
+            word = word.filter(letter => letter !== id);
         } else {
             // Handle incorrect guess
             button.classList.add("fail");
@@ -104,7 +104,7 @@ function getRnd(min, max) {
 
 // Function to select a random word from the words array
 function getRndWord() {
-    const selectedWord = words[getRnd(0, words.length - 1)].split("");
+    const selectedWord = words[getRnd(0, words.length - 1)].toLowerCase().split("");
     if (selectedWord.length >= 7 && window.innerWidth <= 768) {
         main.style.height = "140px";
     }
@@ -112,12 +112,12 @@ function getRndWord() {
 }
 
 // Function to generate word blocks in the DOM
-function genWordBlocks() {
-    currentWord = getRndWord();
-    dupWord = [...currentWord];
+function genWrdBlocks() {
+    word = getRndWord();
+    dupWord = [...word];
 
     // Create divs for each letter in the word
-    currentWord.forEach((letter, index) => {
+    word.forEach((letter, index) => {
         const div = document.createElement("div");
         div.classList.add(`main-block`);
         div.classList.add(`val-${letter}`);
@@ -155,7 +155,7 @@ function resetAll() {
     triesDiv.innerHTML = "";
     startGame.innerHTML = "Play Again";
     img.src = "./assets/images/0.png";
-    currentWord = [];
+    word = [];
     dupWord = [];
     clearFails();
     clearMainDiv();
@@ -164,7 +164,7 @@ function resetAll() {
 
 // Function to clear fail classes from letter buttons
 function clearFails() {
-    for (let i = 97; i < 123; i++) {
+    for (let i = 97; i < 123; i++) { // ASCII codes for a-z
         const letter = String.fromCharCode(i);
         const button = document.querySelector(`#${letter}`);
         if (button) {
@@ -199,8 +199,8 @@ function setImg() {
 
 // Function to set the initial number of tries
 function setTries() {
-    tries = currentWord.length;
-    totalTries = currentWord.length;
+    tries = word.length;
+    totalTries = word.length;
     triesDiv.innerHTML = `Tries: ${tries} out of ${totalTries} tries left`;
 }
 
@@ -227,8 +227,11 @@ function disableBtns() {
         button.disabled = true;
         button.classList.add("disabled");
     });
-    document.querySelector(".hint").disabled = true;
-    document.querySelector(".hint").classList.add("disabled");
+    const hintButton = document.querySelector(".hint");
+    if (hintButton) {
+        hintButton.disabled = true;
+        hintButton.classList.add("disabled");
+    }
 }
 
 // Function to enable all letter buttons and the hint button
@@ -237,8 +240,11 @@ function enableBtns() {
         button.disabled = false;
         button.classList.remove("disabled");
     });
-    document.querySelector(".hint").disabled = false;
-    document.querySelector(".hint").classList.remove("disabled");
+    const hintButton = document.querySelector(".hint");
+    if (hintButton) {
+        hintButton.disabled = false;
+        hintButton.classList.remove("disabled");
+    }
 }
 
 // Function to check win or lose conditions
