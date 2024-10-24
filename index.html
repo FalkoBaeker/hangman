@@ -21,7 +21,7 @@
             *Playing on mobile won't be a better experience
         </div>
         <div class="header">
-            <img id="hangman" src="./assets/images/0.png" alt="" />
+            <img id="hangman" src="./assets/images/0.png" alt="Hangman Image" />
             <div class="title-cont">
                 <h1 class="title">Hangman</h1>
                 <h3 class="sub-title">
@@ -35,96 +35,45 @@
         </div>
 
         <div class="tries-cont">
-            <p class="tries"></p>
+            <p class="tries">Tries: 0 out of 0 tries left</p>
         </div>
 
         <div class="keyboard">
-            <button id="a" class="keyboard-btn">
-                <i>a</i>
-            </button>
-            <button id="b" class="keyboard-btn">
-                <i>b</i>
-            </button>
-            <button id="c" class="keyboard-btn">
-                <i>c</i>
-            </button>
-            <button id="d" class="keyboard-btn">
-                <i>d</i>
-            </button>
-            <button id="e" class="keyboard-btn">
-                <i>e</i>
-            </button>
-            <button id="f" class="keyboard-btn">
-                <i>f</i>
-            </button>
-            <button id="g" class="keyboard-btn">
-                <i>g</i>
-            </button>
-            <button id="h" class="keyboard-btn">
-                <i>h</i>
-            </button>
-            <button id="i" class="keyboard-btn">
-                <i>i</i>
-            </button>
-            <button id="j" class="keyboard-btn">
-                <i>j</i>
-            </button>
-            <button id="k" class="keyboard-btn">
-                <i>k</i>
-            </button>
-            <button id="l" class="keyboard-btn">
-                <i>l</i>
-            </button>
-            <button id="m" class="keyboard-btn">
-                <i>m</i>
-            </button>
-            <button id="n" class="keyboard-btn">
-                <i>n</i>
-            </button>
-            <button id="o" class="keyboard-btn">
-                <i>o</i>
-            </button>
-            <button id="p" class="keyboard-btn">
-                <i>p</i>
-            </button>
-            <button id="q" class="keyboard-btn">
-                <i>q</i>
-            </button>
-            <button id="r" class="keyboard-btn">
-                <i>r</i>
-            </button>
-            <button id="s" class="keyboard-btn">
-                <i>s</i>
-            </button>
-            <button id="t" class="keyboard-btn">
-                <i>t</i>
-            </button>
-            <button id="u" class="keyboard-btn">
-                <i>u</i>
-            </button>
-            <button id="v" class="keyboard-btn">
-                <i>v</i>
-            </button>
-            <button id="w" class="keyboard-btn">
-                <i>w</i>
-            </button>
-            <button id="x" class="keyboard-btn">
-                <i>x</i>
-            </button>
-            <button id="y" class="keyboard-btn">
-                <i>y</i>
-            </button>
-            <button id="z" class="keyboard-btn">
-                <i>z</i>
-            </button>
+            <!-- Letter Buttons -->
+            <button type="button" id="a" class="keyboard-btn" aria-label="Letter A">A</button>
+            <button type="button" id="b" class="keyboard-btn" aria-label="Letter B">B</button>
+            <button type="button" id="c" class="keyboard-btn" aria-label="Letter C">C</button>
+            <button type="button" id="d" class="keyboard-btn" aria-label="Letter D">D</button>
+            <button type="button" id="e" class="keyboard-btn" aria-label="Letter E">E</button>
+            <button type="button" id="f" class="keyboard-btn" aria-label="Letter F">F</button>
+            <button type="button" id="g" class="keyboard-btn" aria-label="Letter G">G</button>
+            <button type="button" id="h" class="keyboard-btn" aria-label="Letter H">H</button>
+            <button type="button" id="i" class="keyboard-btn" aria-label="Letter I">I</button>
+            <button type="button" id="j" class="keyboard-btn" aria-label="Letter J">J</button>
+            <button type="button" id="k" class="keyboard-btn" aria-label="Letter K">K</button>
+            <button type="button" id="l" class="keyboard-btn" aria-label="Letter L">L</button>
+            <button type="button" id="m" class="keyboard-btn" aria-label="Letter M">M</button>
+            <button type="button" id="n" class="keyboard-btn" aria-label="Letter N">N</button>
+            <button type="button" id="o" class="keyboard-btn" aria-label="Letter O">O</button>
+            <button type="button" id="p" class="keyboard-btn" aria-label="Letter P">P</button>
+            <button type="button" id="q" class="keyboard-btn" aria-label="Letter Q">Q</button>
+            <button type="button" id="r" class="keyboard-btn" aria-label="Letter R">R</button>
+            <button type="button" id="s" class="keyboard-btn" aria-label="Letter S">S</button>
+            <button type="button" id="t" class="keyboard-btn" aria-label="Letter T">T</button>
+            <button type="button" id="u" class="keyboard-btn" aria-label="Letter U">U</button>
+            <button type="button" id="v" class="keyboard-btn" aria-label="Letter V">V</button>
+            <button type="button" id="w" class="keyboard-btn" aria-label="Letter W">W</button>
+            <button type="button" id="x" class="keyboard-btn" aria-label="Letter X">X</button>
+            <button type="button" id="y" class="keyboard-btn" aria-label="Letter Y">Y</button>
+            <button type="button" id="z" class="keyboard-btn" aria-label="Letter Z">Z</button>
         </div>
 
         <div class="start">
-            <button type="button" id="start" class="start-button">
-                <i id="start-game">start Game</i>
+            <button type="button" id="start" class="start-button" aria-label="Start Game">
+                Start Game
             </button>
-            <button class="hint" id="hint">
-                <i>Hint</i>
+            <button type="button" class="hint" id="hint" aria-label="Hint">
+                Hint
             </button>
         </div>
 
@@ -134,10 +83,12 @@
             <h3>Taking a hint costs 2 tries</h3>
             <p>Are you sure to make the trade?🤔</p>
             <div class="hint-btn">
-                <button id="close-hint">
+                <button type="button" id="close-hint" aria-label="Close Hint Modal">
                     Nah🙄, I'll figure it out myself
                 </button>
-                <button class="close-button" id="take-hint">Yeah sure😇</button>
+                <button type="button" class="close-button" id="take-hint" aria-label="Take Hint">
+                    Yeah sure😇
+                </button>
             </div>
         </dialog>
         <!-- Not enough tries modal -->
@@ -157,9 +108,8 @@
         </dialog>
 
         <!-- About Modal -->
-
-        <button class="open-about" id="open-about">
-            <img src="./assets/images/about.png" alt="about-icon-icons8" />
+        <button type="button" class="open-about" id="open-about" aria-label="Open About Modal">
+            <img src="./assets/images/about.png" alt="About Icon" />
         </button>
         <dialog class="modal modal-about" id="modal-about">
             <h4>Hangman</h4>
@@ -172,13 +122,15 @@
                 <span>TechStack:</span>
                 <img
                     src="./assets/images/icons8-html-5-48.png"
-                    alt="html-icon-icon8"
-                /><img
+                    alt="HTML Icon"
+                />
+                <img
                     src="./assets/images/icons8-css3-48.png"
-                    alt="css-icon-icon8"
-                /><img
+                    alt="CSS Icon"
+                />
+                <img
                     src="./assets/images/icons8-javascript-48.png"
-                    alt="js-icon-icon8"
+                    alt="JavaScript Icon"
                 />
             </div>
             <div class="about-links">
@@ -187,6 +139,7 @@
                     <a
                         href="https://github.com/yousafsabir/hangman"
                         target="_blank"
+                        rel="noopener noreferrer"
                         >Github</a
                     >
                 </p>
@@ -195,11 +148,12 @@
                     <a
                         href="https://github.com/catdad/canvas-confetti"
                         target="_blank"
+                        rel="noopener noreferrer"
                         >catdad</a
                     >
                 </p>
             </div>
-            <button class="close-about" id="close-about">
+            <button type="button" class="close-about" id="close-about" aria-label="Close About Modal">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-5 w-5"
