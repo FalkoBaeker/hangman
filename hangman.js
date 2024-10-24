@@ -34,6 +34,7 @@ const winModal = document.querySelector("#modal-win");
 const loseModal = document.querySelector("#modal-lose");
 const secretWord = document.querySelector("#secret-word");
 const aboutModal = document.querySelector("#modal-about");
+const hintButton = document.querySelector("#hint"); // Cached for easier access
 
 // Game State Variables
 let blocks = null; // DOM elements representing each letter block
@@ -49,72 +50,71 @@ disableBtns();
 // Add event listeners to letter buttons
 keyboardBtns.forEach((key) => {
     const letter = key.getAttribute("id").toLowerCase(); // Ensure lowercase
-    key.addEventListener("click", () => play(letter));
+    key.addEventListener("click", () => handleLetterClick(letter));
 });
 
 // Add event listener to the start button
-startButton.addEventListener("click", () => {
-    disableStart();
-    enableBtns();
-    clearFails();
-    clearMainDiv();
-    generateWordBlocks();
-    setTries();
-});
+startButton.addEventListener("click", startNewGame);
 
 // Function to handle letter button clicks
-function play(letter) {
-    if (tries > 0) {
-        const button = document.querySelector(`#${letter}`);
-        if (!button) {
-            console.error(`Button with ID '${letter}' not found.`);
-            return;
-        }
+function handleLetterClick(letter) {
+    if (tries <= 0 || remainingLetters.size === 0) return; // Prevent actions if game over
 
-        const isMatch = originalWord.includes(letter);
-
-        if (isMatch) {
-            // Reveal all instances of the letter
-            blocks.forEach((block) => {
-                if (block.getAttribute('data-letter') === letter && !block.classList.contains("visible")) {
-                    block.classList.add("visible");
-                    block.textContent = letter.toUpperCase(); // Show the letter
-                }
-            });
-
-            // Remove the letter from remainingLetters to prevent further matches
-            remainingLetters.delete(letter);
-        } else {
-            // Handle incorrect guess
-            button.classList.add("fail");
-            decTries();
-            triesDiv.innerHTML = `Tries: ${tries} out of ${totalTries} tries left`;
-            setImg();
-        }
-
-        // Disable the button after click
-        button.disabled = true;
-        button.classList.add('disabled');
-
-        // Check win or lose conditions
-        winLose();
+    const button = document.querySelector(`#${letter}`);
+    if (!button) {
+        console.error(`Button with ID '${letter}' not found.`);
+        return;
     }
+
+    const isMatch = originalWord.includes(letter);
+
+    if (isMatch) {
+        // Reveal all instances of the letter
+        blocks.forEach((block) => {
+            if (block.getAttribute('data-letter') === letter && !block.classList.contains("visible")) {
+                block.classList.add("visible");
+                block.textContent = letter.toUpperCase(); // Show the letter
+            }
+        });
+
+        // Remove the letter from remainingLetters to prevent further matches
+        remainingLetters.delete(letter);
+    } else {
+        // Handle incorrect guess
+        button.classList.add("fail");
+        decTries();
+        updateTriesDisplay();
+        updateHangmanImage();
+    }
+
+    // Disable the button after click
+    button.disabled = true;
+    button.classList.add('disabled');
+
+    // Check win or lose conditions
+    checkWinLose();
 }
 
-// Utility Functions
-
-// Function to generate a random number between min and max (inclusive)
-function getRnd(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+// Function to start a new game
+function startNewGame() {
+    disableStart();
+    enableBtns();
+    resetGameState();
+    generateWordBlocks();
+    setTries();
+    firstTime = true; // Reset hint state for new game
 }
 
-// Function to select a random word from the words array
-function getRndWord() {
-    const selectedWord = words[getRnd(0, words.length - 1)].toLowerCase().split("");
-    if (selectedWord.length >= 7 && window.innerWidth <= 768) {
-        main.style.height = "140px";
-    }
-    return selectedWord;
+// Function to reset the game state
+function resetGameState() {
+    tries = 0;
+    totalTries = 0;
+    remainingLetters.clear();
+    secretWord.innerHTML = "";
+    clearFails();
+    clearMainDiv();
+    updateTriesDisplay();
+    img.src = "./assets/images/0.png"; // Reset hangman image
 }
 
 // Function to generate word blocks in the DOM
@@ -136,83 +136,65 @@ function generateWordBlocks() {
     blocks = document.querySelectorAll(".main-block");
 }
 
+// Utility Functions
+
+// Function to generate a random number between min and max (inclusive)
+function getRnd(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Function to select a random word from the words array
+function getRndWord() {
+    const selectedWord = words[getRnd(0, words.length - 1)].toLowerCase().split("");
+    if (selectedWord.length >= 7 && window.innerWidth <= 768) {
+        main.style.height = "140px";
+    }
+    return selectedWord;
+}
+
+// Function to update the tries display
+function updateTriesDisplay() {
+    triesDiv.innerHTML = `Tries: ${tries} out of ${totalTries} tries left`;
+}
+
 // Function to handle hints
-document.querySelector("#hint").addEventListener("click", hint);
-function hint() {
+hintButton.addEventListener("click", handleHint);
+
+function handleHint() {
+    if (tries <= 0 || remainingLetters.size === 0) return; // Prevent hints if game over
+
     if (firstTime && tries > 2) {
-        openHint();
-    } else if (tries > 2 && !firstTime) {
-        const hiddenBlocks = Array.from(blocks).filter(block => !block.classList.contains("visible"));
-        if (hiddenBlocks.length > 0) {
-            const randomBlock = hiddenBlocks[getRnd(0, hiddenBlocks.length - 1)];
-            const letter = randomBlock.getAttribute('data-letter');
-            play(letter);
-            tries -= 2;
-            if (tries < 0) tries = 0;
-            triesDiv.innerHTML = `Tries: ${tries} out of ${totalTries} tries left`;
-            setImg();
-        }
-    } else if (tries <= 2) {
-        tries0();
+        openHintModal();
+    } else if (tries > 2) {
+        revealRandomLetter();
+        decTries(2); // Deduct 2 tries for additional hints
+        updateTriesDisplay();
+        updateHangmanImage();
+    } else {
+        openTries0Modal();
     }
 }
 
-// Function to reset the game state
-function resetAll() {
-    tries = 0;
-    triesDiv.innerHTML = "";
-    startGame.innerHTML = "Play Again";
-    img.src = "./assets/images/0.png";
-    originalWord = [];
-    remainingLetters.clear();
-    clearFails();
-    clearMainDiv();
-    enableStart();
-}
+// Function to reveal a random hidden letter
+function revealRandomLetter() {
+    const hiddenBlocks = Array.from(blocks).filter(block => !block.classList.contains("visible"));
+    if (hiddenBlocks.length === 0) return;
 
-// Function to clear fail classes from letter buttons
-function clearFails() {
-    keyboardBtns.forEach(button => {
-        button.classList.remove("fail");
-        button.classList.remove("disabled");
-        button.disabled = false;
-    });
-}
-
-// Function to clear the main word display
-function clearMainDiv() {
-    mainDiv.innerHTML = "";
-    main.style.height = ""; // Reset height
-}
-
-// Function to update the hangman image based on remaining tries
-function setImg() {
-    const percent = (tries / totalTries) * 100;
-    if (percent > 71.5 && percent <= 87.75) {
-        img.src = "./assets/images/1.png";
-    } else if (percent > 57.25 && percent <= 71.5) {
-        img.src = "./assets/images/2.png";
-    } else if (percent > 43 && percent <= 57.25) {
-        img.src = "./assets/images/3.png";
-    } else if (percent > 28.75 && percent <= 43) {
-        img.src = "./assets/images/4.png";
-    } else if (percent > 14.5 && percent <= 28.75) {
-        img.src = "./assets/images/5.png";
-    } else if (percent <= 14.5) {
-        img.src = "./assets/images/6.png";
-    }
+    const randomBlock = hiddenBlocks[getRnd(0, hiddenBlocks.length - 1)];
+    const letter = randomBlock.getAttribute('data-letter');
+    handleLetterClick(letter);
 }
 
 // Function to set the initial number of tries
 function setTries() {
-    tries = originalWord.length;
-    totalTries = originalWord.length;
-    triesDiv.innerHTML = `Tries: ${tries} out of ${totalTries} tries left`;
+    totalTries = Math.max(originalWord.length, 6); // Ensure a minimum number of tries
+    tries = totalTries;
+    updateTriesDisplay();
 }
 
 // Function to decrement tries
-function decTries() {
-    tries -= 1;
+function decTries(amount = 1) {
+    tries -= amount;
     if (tries < 0) tries = 0;
 }
 
@@ -234,7 +216,6 @@ function disableBtns() {
         button.disabled = true;
         button.classList.add("disabled");
     });
-    const hintButton = document.querySelector("#hint");
     if (hintButton) {
         hintButton.disabled = true;
         hintButton.classList.add("disabled");
@@ -246,102 +227,145 @@ function enableBtns() {
     keyboardBtns.forEach(button => {
         button.disabled = false;
         button.classList.remove("disabled");
+        button.classList.remove("fail"); // Reset fail class
     });
-    const hintButton = document.querySelector("#hint");
     if (hintButton) {
         hintButton.disabled = false;
         hintButton.classList.remove("disabled");
     }
 }
 
+// Function to clear fail and disabled classes from letter buttons
+function clearFails() {
+    keyboardBtns.forEach(button => {
+        button.classList.remove("fail");
+        button.classList.remove("disabled");
+        button.disabled = false;
+    });
+}
+
+// Function to clear the main word display
+function clearMainDiv() {
+    mainDiv.innerHTML = "";
+    main.style.height = ""; // Reset height
+}
+
+// Function to update the hangman image based on remaining tries
+function updateHangmanImage() {
+    const percent = (tries / totalTries) * 100;
+    if (percent > 71.5 && percent <= 87.75) {
+        img.src = "./assets/images/1.png";
+    } else if (percent > 57.25 && percent <= 71.5) {
+        img.src = "./assets/images/2.png";
+    } else if (percent > 43 && percent <= 57.25) {
+        img.src = "./assets/images/3.png";
+    } else if (percent > 28.75 && percent <= 43) {
+        img.src = "./assets/images/4.png";
+    } else if (percent > 14.5 && percent <= 28.75) {
+        img.src = "./assets/images/5.png";
+    } else if (percent <= 14.5) {
+        img.src = "./assets/images/6.png";
+    } else {
+        img.src = "./assets/images/0.png"; // Default image
+    }
+}
+
 // Function to check win or lose conditions
-function winLose() {
-    if (tries === 0) {
+function checkWinLose() {
+    if (tries <= 0) {
         // Player has lost
-        secretWord.innerHTML = `Secret word was "${originalWord.join("")}"`;
-        openLose();
+        revealSecretWord();
+        openLoseModal();
         setTimeout(() => {
-            hideTries();
-            closeLose();
-            resetAll();
-            disableBtns();
+            closeLoseModal();
+            resetAfterGameOver();
         }, 2500);
     } else if (remainingLetters.size === 0) {
         // Player has won
-        confetti({
-            particleCount: 200,
-            scalar: 1.175,
-            angle: 60,
-            gravity: 0.75,
-            spread: 70,
-            origin: { x: 0 },
-        });
-        confetti({
-            particleCount: 200,
-            scalar: 1.175,
-            angle: 120,
-            gravity: 0.75,
-            spread: 70,
-            origin: { x: 1 },
-        });
-        openWin();
+        triggerConfetti();
+        openWinModal();
         setTimeout(() => {
-            hideTries();
-            closeWin();
-            resetAll();
-            disableBtns();
+            closeWinModal();
+            resetAfterGameOver();
         }, 3000);
     }
 }
 
-// Function to hide the tries div
-function hideTries() {
-    const triesElement = document.querySelector(".tries");
-    if (triesElement) {
-        triesElement.style.display = "none";
-    }
+// Function to reveal the secret word upon losing
+function revealSecretWord() {
+    secretWord.innerHTML = `Secret word was "<strong>${originalWord.join("").toUpperCase()}</strong>"`;
+}
+
+// Function to reset the game after win or lose
+function resetAfterGameOver() {
+    resetGameState();
+    disableBtns();
+    enableStart();
+}
+
+// Function to trigger confetti on win
+function triggerConfetti() {
+    confetti({
+        particleCount: 200,
+        scalar: 1.175,
+        angle: 60,
+        gravity: 0.75,
+        spread: 70,
+        origin: { x: 0 },
+    });
+    confetti({
+        particleCount: 200,
+        scalar: 1.175,
+        angle: 120,
+        gravity: 0.75,
+        spread: 70,
+        origin: { x: 1 },
+    });
 }
 
 // ================== Modal Functions =====================
 
 // Function to open hint modal
-function openHint() {
+function openHintModal() {
     hintModal.showModal();
 }
 
 // Function to close hint modal
-document.querySelector("#close-hint").addEventListener("click", closeHint);
-function closeHint() {
+document.querySelector("#close-hint").addEventListener("click", closeHintModal);
+function closeHintModal() {
     hintModal.close();
 }
 
 // Function to open tries0 modal
-function openTries0() {
+function openTries0Modal() {
     tries0Modal.showModal();
+    setTimeout(() => {
+        closeTries0Modal();
+    }, 1500); // Extended time for better user experience
 }
 
 // Function to close tries0 modal
-function closeTries0() {
+function closeTries0Modal() {
     tries0Modal.close();
 }
 
 // Function to open win modal
-function openWin() {
+function openWinModal() {
     winModal.showModal();
 }
 
 // Function to close win modal
-function closeWin() {
+function closeWinModal() {
     winModal.close();
 }
 
 // Function to open lose modal
-function openLose() {
+function openLoseModal() {
     loseModal.showModal();
 }
 
 // Function to close lose modal
-function closeLose() {
+function closeLoseModal() {
     loseModal.close();
 }
 
@@ -356,17 +380,28 @@ document.querySelector("#close-about").addEventListener("click", () => {
 });
 
 // Function to handle taking a hint
-document.querySelector("#take-hint").addEventListener("click", setFirstTimeFalse);
-function setFirstTimeFalse() {
+document.querySelector("#take-hint").addEventListener("click", applyHint);
+function applyHint() {
     firstTime = false;
-    closeHint();
-    hint();
+    closeHintModal();
+    revealRandomLetter();
+    decTries(2); // Deduct 2 tries for taking a hint
+    updateTriesDisplay();
+    updateHangmanImage();
 }
 
-// Function to handle when player has not enough tries
-function tries0() {
-    openTries0();
-    setTimeout(() => {
-        closeTries0();
-    }, 1000);
+// Function to handle opening hint
+function handleHint() {
+    if (tries <= 0 || remainingLetters.size === 0) return; // Prevent hints if game over
+
+    if (firstTime && tries > 2) {
+        openHintModal();
+    } else if (tries > 2) {
+        revealRandomLetter();
+        decTries(2); // Deduct 2 tries for additional hints
+        updateTriesDisplay();
+        updateHangmanImage();
+    } else {
+        openTries0Modal();
+    }
 }
