@@ -19,7 +19,6 @@ const words = [
     "wasm", "walk", "wife", "wire", "yard", "yell", "young", "zoo", "zero",
 ];
 
-// ============================================================
 // DOM Element Selectors
 const keyboardBtns = document.querySelectorAll(".keyboard-btn");
 const triesDiv = document.querySelector(".tries");
@@ -36,23 +35,21 @@ const secretWord = document.querySelector("#secret-word");
 const aboutModal = document.querySelector("#modal-about");
 
 // Game State Variables
-let blocks = null; // DOM elements representing each letter block
-let originalWord = []; // The original word as an array of letters
-let remainingLetters = new Set(); // Unique letters remaining to guess
-let tries = 0; // Current number of tries left
-let totalTries = 0; // Total number of tries allowed
-let firstTime = true; // Indicates if it's the first hint
+let blocks = null;
+let selectedWord = [];
+let tries = 0;
+let totalTries = null;
+let firstTime = true;
 
-// Initial Setup: Disable all letter buttons and the hint button
+// Initial Setup
 disableBtns();
 
 // Add event listeners to letter buttons
 keyboardBtns.forEach((key) => {
-    const letter = key.getAttribute("id").toLowerCase(); // Ensure lowercase
-    key.addEventListener("click", () => play(letter));
+    key.addEventListener("click", () => play(key.getAttribute("id")));
 });
 
-// Add event listener to the start button
+// Start button event listener
 startButton.addEventListener("click", () => {
     disableStart();
     enableBtns();
@@ -62,215 +59,156 @@ startButton.addEventListener("click", () => {
     setTries();
 });
 
-// Function to handle letter button clicks
+// Main game play function
 function play(letter) {
-    if (tries > 0) {
-        const button = document.querySelector(`#${letter}`);
-        if (!button) {
-            console.error(`Button with ID '${letter}' not found.`);
-            return;
-        }
-
-        const isMatch = originalWord.includes(letter);
-
-        if (isMatch) {
-            // Reveal all instances of the letter
-            blocks.forEach((block) => {
-                if (block.textContent.toLowerCase() === letter && !block.classList.contains("visible")) {
-                    block.classList.add("visible");
-                    block.textContent = block.textContent.toUpperCase(); // Show the letter
-                }
-            });
-
-            // Remove the letter from remainingLetters to prevent further matches
-            remainingLetters.delete(letter);
-        } else {
-            // Handle incorrect guess
-            button.classList.add("fail");
-            decTries();
-            triesDiv.innerHTML = `Tries: ${tries} out of ${totalTries} tries left`;
-            setImg();
-        }
-
-        // Disable the button after click
-        button.disabled = true;
-        button.classList.add('disabled');
-
-        // Check win or lose conditions
-        winLose();
+    if (tries <= 0) return;
+    
+    const button = document.querySelector(`#${letter}`);
+    if (!button) return;
+    
+    // Disable the button immediately after click
+    button.disabled = true;
+    
+    const matches = getAllIndices(selectedWord, letter);
+    
+    if (matches.length > 0) {
+        // Reveal all instances of the letter
+        matches.forEach(index => {
+            const block = blocks[index];
+            block.classList.add("visible");
+            block.textContent = letter.toUpperCase();
+        });
+        button.classList.add("success");
+    } else {
+        // Wrong guess
+        button.classList.add("fail");
+        decTries();
+        triesDiv.innerHTML = `${tries} out of ${totalTries} tries left`;
+        setImg();
     }
+    
+    winLose();
 }
 
-// Utility Functions
-
-// Function to generate a random number between min and max (inclusive)
-function getRnd(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+// Helper function to get all indices of a letter in the word
+function getAllIndices(arr, val) {
+    const indices = [];
+    arr.forEach((letter, i) => {
+        if (letter === val) indices.push(i);
+    });
+    return indices;
 }
 
-// Function to select a random word from the words array
+// Generate random word
 function getRndWord() {
-    const selectedWord = words[getRnd(0, words.length - 1)].toLowerCase().split("");
-    if (selectedWord.length >= 7 && window.innerWidth <= 768) {
+    const word = words[Math.floor(Math.random() * words.length)].toLowerCase().split("");
+    if (word.length >= 7 && window.innerWidth <= 768) {
         main.style.height = "140px";
     }
-    return selectedWord;
+    return word;
 }
 
-// Function to generate word blocks in the DOM
+// Generate word blocks
 function generateWordBlocks() {
-    originalWord = getRndWord();
-    remainingLetters = new Set(originalWord); // Initialize remainingLetters with unique letters
+    selectedWord = getRndWord();
+    console.log(selectedWord.join("")); // For debugging
 
-    // Create divs for each letter in the word
-    originalWord.forEach((letter, index) => {
+    selectedWord.forEach((letter, index) => {
         const div = document.createElement("div");
-        div.classList.add(`main-block`);
+        div.classList.add("main-block");
         div.classList.add(`val-${letter}`);
-        div.setAttribute("id", `letter-${index}`);
-        div.textContent = "_"; // Initially hide the letters
+        div.textContent = "_";
         mainDiv.appendChild(div);
     });
-
+    
     blocks = document.querySelectorAll(".main-block");
 }
 
-// Function to handle hints
-document.querySelector("#hint").addEventListener("click", hint);
-function hint() {
-    if (firstTime && tries > 2) {
-        openHint();
-    } else if (tries > 2 && !firstTime) {
-        const hiddenBlocks = Array.from(blocks).filter(block => !block.classList.contains("visible"));
-        if (hiddenBlocks.length > 0) {
-            const randomBlock = hiddenBlocks[getRnd(0, hiddenBlocks.length - 1)];
-            const letter = originalWord[randomBlock.getAttribute("id").split("-")[1]];
-            play(letter);
-            tries -= 2;
-            if (tries < 0) tries = 0;
-            triesDiv.innerHTML = `Tries: ${tries} out of ${totalTries} tries left`;
-            setImg();
-        }
-    } else if (tries <= 2) {
-        tries0();
-    }
-}
-
-// Function to reset the game state
+// Reset game
 function resetAll() {
     tries = 0;
     triesDiv.innerHTML = "";
     startGame.innerHTML = "Play Again";
     img.src = "./assets/images/0.png";
-    originalWord = [];
-    remainingLetters.clear();
+    selectedWord = [];
     clearFails();
     clearMainDiv();
     enableStart();
 }
 
-// Function to clear fail classes from letter buttons
+// Clear failed attempts
 function clearFails() {
-    for (let i = 97; i < 123; i++) { // ASCII codes for a-z
-        const letter = String.fromCharCode(i);
-        const button = document.querySelector(`#${letter}`);
-        if (button) {
-            button.classList.remove("fail");
-            button.classList.remove("disabled");
-            button.disabled = false;
-        }
-    }
+    keyboardBtns.forEach(btn => {
+        btn.classList.remove("fail", "success");
+        btn.disabled = false;
+    });
 }
 
-// Function to clear the main word display
+// Clear main display
 function clearMainDiv() {
     mainDiv.innerHTML = "";
-    main.style.height = ""; // Reset height
+    main.style.height = "";
 }
 
-// Function to update the hangman image based on remaining tries
+// Set hangman image
 function setImg() {
     const percent = (tries / totalTries) * 100;
-    if (percent > 71.5 && percent <= 87.75) {
-        img.src = "./assets/images/1.png";
-    } else if (percent > 57.25 && percent <= 71.5) {
-        img.src = "./assets/images/2.png";
-    } else if (percent > 43 && percent <= 57.25) {
-        img.src = "./assets/images/3.png";
-    } else if (percent > 28.75 && percent <= 43) {
-        img.src = "./assets/images/4.png";
-    } else if (percent > 14.5 && percent <= 28.75) {
-        img.src = "./assets/images/5.png";
-    } else if (percent <= 14.5) {
-        img.src = "./assets/images/6.png";
-    }
+    if (percent > 71.5 && percent <= 87.75) img.src = "./assets/images/1.png";
+    else if (percent > 57.25 && percent <= 71.5) img.src = "./assets/images/2.png";
+    else if (percent > 43 && percent <= 57.25) img.src = "./assets/images/3.png";
+    else if (percent > 28.75 && percent <= 43) img.src = "./assets/images/4.png";
+    else if (percent > 14.5 && percent <= 28.75) img.src = "./assets/images/5.png";
+    else if (percent <= 14.5) img.src = "./assets/images/6.png";
 }
 
-// Function to set the initial number of tries
+// Set tries
 function setTries() {
-    tries = originalWord.length;
-    totalTries = originalWord.length;
-    triesDiv.innerHTML = `Tries: ${tries} out of ${totalTries} tries left`;
+    tries = selectedWord.length;
+    totalTries = selectedWord.length;
+    triesDiv.innerHTML = `${tries} out of ${totalTries} tries left`;
 }
 
-// Function to decrement tries
 function decTries() {
-    tries -= 1;
-    if (tries < 0) tries = 0;
+    tries = Math.max(0, tries - 1);
 }
 
-// Function to disable the start button
+// Button state management
 function disableStart() {
     startButton.disabled = true;
     startButton.classList.add("start-fail");
 }
 
-// Function to enable the start button
 function enableStart() {
     startButton.disabled = false;
     startButton.classList.remove("start-fail");
 }
 
-// Function to disable all letter buttons and the hint button
 function disableBtns() {
-    keyboardBtns.forEach(button => {
-        button.disabled = true;
-        button.classList.add("disabled");
-    });
-    const hintButton = document.querySelector(".hint");
-    if (hintButton) {
-        hintButton.disabled = true;
-        hintButton.classList.add("disabled");
-    }
+    keyboardBtns.forEach(btn => btn.disabled = true);
+    document.querySelector(".hint").disabled = true;
 }
 
-// Function to enable all letter buttons and the hint button
 function enableBtns() {
-    keyboardBtns.forEach(button => {
-        button.disabled = false;
-        button.classList.remove("disabled");
-    });
-    const hintButton = document.querySelector(".hint");
-    if (hintButton) {
-        hintButton.disabled = false;
-        hintButton.classList.remove("disabled");
-    }
+    keyboardBtns.forEach(btn => btn.disabled = false);
+    document.querySelector(".hint").disabled = false;
 }
 
-// Function to check win or lose conditions
+// Win/Lose conditions
 function winLose() {
+    const allLettersRevealed = Array.from(blocks).every(block => 
+        block.classList.contains("visible")
+    );
+
     if (tries === 0) {
-        // Player has lost
-        secretWord.innerHTML = `Secret word was "${originalWord.join("")}"`;
+        secretWord.innerHTML = `secret word was "${selectedWord.join("")}"`;
         openLose();
         setTimeout(() => {
-            hideTries();
+            triesDiv.innerHTML = "";
             closeLose();
             resetAll();
             disableBtns();
         }, 2500);
-    } else if (remainingLetters.size === 0) {
-        // Player has won
+    } else if (allLettersRevealed) {
         confetti({
             particleCount: 200,
             scalar: 1.175,
@@ -289,7 +227,7 @@ function winLose() {
         });
         openWin();
         setTimeout(() => {
-            hideTries();
+            triesDiv.innerHTML = "";
             closeWin();
             resetAll();
             disableBtns();
@@ -297,79 +235,49 @@ function winLose() {
     }
 }
 
-// Function to hide the tries div
-function hideTries() {
-    const triesElement = document.querySelector(".tries");
-    if (triesElement) {
-        triesElement.style.display = "none";
+// Hint system
+document.querySelector("#hint").addEventListener("click", hint);
+
+function hint() {
+    if (firstTime && tries > 2) {
+        openHint();
+    } else if (tries > 2 && !firstTime) {
+        const hiddenBlocks = Array.from(blocks).filter(block => !block.classList.contains("visible"));
+        if (hiddenBlocks.length > 0) {
+            const randomBlock = hiddenBlocks[Math.floor(Math.random() * hiddenBlocks.length)];
+            const letter = selectedWord[Array.from(blocks).indexOf(randomBlock)];
+            play(letter);
+            tries -= 2;
+            triesDiv.innerHTML = `${tries} out of ${totalTries} tries left`;
+            setImg();
+        }
+    } else if (tries <= 2) {
+        tries0();
     }
 }
 
-// ================== Modal Functions =====================
+// Modal functions
+function openHint() { hintModal.showModal(); }
+function closeHint() { hintModal.close(); }
+function openTries0() { tries0Modal.showModal(); }
+function closeTries0() { tries0Modal.close(); }
+function openWin() { winModal.showModal(); }
+function closeWin() { winModal.close(); }
+function openLose() { loseModal.showModal(); }
+function closeLose() { loseModal.close(); }
 
-// Function to open hint modal
-function openHint() {
-    hintModal.showModal();
-}
-
-// Function to close hint modal
 document.querySelector("#close-hint").addEventListener("click", closeHint);
-function closeHint() {
-    hintModal.close();
-}
-
-// Function to open tries0 modal
-function openTries0() {
-    tries0Modal.showModal();
-}
-
-// Function to close tries0 modal
-function closeTries0() {
-    tries0Modal.close();
-}
-
-// Function to open win modal
-function openWin() {
-    winModal.showModal();
-}
-
-// Function to close win modal
-function closeWin() {
-    winModal.close();
-}
-
-// Function to open lose modal
-function openLose() {
-    loseModal.showModal();
-}
-
-// Function to close lose modal
-function closeLose() {
-    loseModal.close();
-}
-
-// Function to open about modal
-document.querySelector("#open-about").addEventListener("click", () => {
-    aboutModal.showModal();
-});
-
-// Function to close about modal
-document.querySelector("#close-about").addEventListener("click", () => {
-    aboutModal.close();
-});
-
-// Function to handle taking a hint
+document.querySelector("#open-about").addEventListener("click", () => aboutModal.showModal());
+document.querySelector("#close-about").addEventListener("click", () => aboutModal.close());
 document.querySelector("#take-hint").addEventListener("click", setFirstTimeFalse);
+
 function setFirstTimeFalse() {
     firstTime = false;
     closeHint();
     hint();
 }
 
-// Function to handle when player has not enough tries
 function tries0() {
     openTries0();
-    setTimeout(() => {
-        closeTries0();
-    }, 1000);
+    setTimeout(closeTries0, 1000);
 }
