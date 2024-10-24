@@ -1,148 +1,33 @@
-// import confetti from "./confetti.js";
+// Import confetti library
 import confetti from "https://cdn.skypack.dev/canvas-confetti";
 
-let words = [
-    "about",
-    "apple",
-    "aunt",
-    "away",
-    "bash",
-    "back",
-    "before",
-    "box",
-    "buy",
-    "csharp",
-    "cake",
-    "chair",
-    "circle",
-    "come",
-    "dart",
-    "dance",
-    "deep",
-    "die",
-    "drop",
-    "elixir",
-    "each",
-    "empty",
-    "ever",
-    "eye",
-    "fortran",
-    "face",
-    "fever",
-    "firm",
-    "fork",
-    "golang",
-    "gate",
-    "gift",
-    "gold",
-    "gun",
-    "haskell",
-    "hair",
-    "hurt",
-    "head",
-    "hen",
-    "ink",
-    "isle",
-    "iron",
-    "ice",
-    "javascript",
-    "java",
-    "junk",
-    "jam",
-    "juice",
-    "jug",
-    "kotlin",
-    "kill",
-    "knee",
-    "knife",
-    "know",
-    "lua",
-    "long",
-    "last",
-    "light",
-    "lame",
-    "matlab",
-    "moon",
-    "milk",
-    "mad",
-    "meal",
-    "native",
-    "negro",
-    "news",
-    "nice",
-    "ocaml",
-    "off",
-    "old",
-    "over",
-    "oil",
-    "python",
-    "pain",
-    "price",
-    "pen",
-    "pull",
-    "php",
-    "quick",
-    "queen",
-    "queer",
-    "rust",
-    "rain",
-    "rice",
-    "run",
-    "ruby",
-    "repair",
-    "spell",
-    "scala",
-    "skin",
-    "swift",
-    "story",
-    "solidity",
-    "soup",
-    "true",
-    "thin",
-    "typescript",
-    "tilte",
-    "toe",
-    "ugly",
-    "use",
-    "unit",
-    "voice",
-    "visit",
-    "water",
-    "wasm",
-    "walk",
-    "wife",
-    "wire",
-    "yard",
-    "yell",
-    "young",
-    "zoo",
-    "zero",
+// List of possible words
+const words = [
+    "about", "apple", "aunt", "away", "bash", "back", "before", "box", "buy",
+    "csharp", "cake", "chair", "circle", "come", "dart", "dance", "deep",
+    "die", "drop", "elixir", "each", "empty", "ever", "eye", "fortran",
+    "face", "fever", "firm", "fork", "golang", "gate", "gift", "gold",
+    "gun", "haskell", "hair", "hurt", "head", "hen", "ink", "isle", "iron",
+    "ice", "javascript", "java", "junk", "jam", "juice", "jug", "kotlin",
+    "kill", "knee", "knife", "know", "lua", "long", "last", "light", "lame",
+    "matlab", "moon", "milk", "mad", "meal", "native", "negro", "news",
+    "nice", "ocaml", "off", "old", "over", "oil", "python", "pain",
+    "price", "pen", "pull", "php", "quick", "queen", "queer", "rust",
+    "rain", "rice", "run", "ruby", "repair", "spell", "scala", "skin",
+    "swift", "story", "solidity", "soup", "true", "thin", "typescript",
+    "tilte", "toe", "ugly", "use", "unit", "voice", "visit", "water",
+    "wasm", "walk", "wife", "wire", "yard", "yell", "young", "zoo", "zero",
 ];
 
 // ============================================================
-// Changing height of main div in getRndWord on w=768px if letters exceeds 7
-const winWidth = window.innerWidth;
-
-// adding listener to each key
-let keyboardBtns = document.querySelectorAll(".keyboard-btn");
-keyboardBtns.forEach((key) => {
-    key.addEventListener("click", () => play(key.getAttribute("id")));
-});
-
-const tries_div = document.querySelector(".tries");
-const start_button = document.querySelector("#start");
+// DOM Element Selectors
+const keyboardBtns = document.querySelectorAll(".keyboard-btn");
+const triesDiv = document.querySelector(".tries");
+const startButton = document.querySelector("#start");
 const main = document.querySelector(".main");
-const main_div = document.querySelector(".inner-main");
+const mainDiv = document.querySelector(".inner-main");
 const img = document.querySelector("#hangman");
 const startGame = document.querySelector("#start-game");
-let blocks = null;
-let dupWord = [];
-let word = [];
-let tries = 0;
-let totalTries = null;
-let firstTime = true;
-
-// Modals
 const hintModal = document.querySelector("#modal-hint");
 const tries0Modal = document.querySelector("#modal-tries0");
 const winModal = document.querySelector("#modal-win");
@@ -150,131 +35,153 @@ const loseModal = document.querySelector("#modal-lose");
 const secretWord = document.querySelector("#secret-word");
 const aboutModal = document.querySelector("#modal-about");
 
-// starting script
+// Game State Variables
+let blocks = null;
+let dupWord = [];
+let currentWord = [];
+let tries = 0;
+let totalTries = 0;
+let firstTime = true;
+
+// Initialize the game by disabling buttons
 disableBtns();
 
-start_button.addEventListener("click", () => {
+// Add event listeners to letter buttons
+keyboardBtns.forEach((key) => {
+    key.addEventListener("click", () => play(key.getAttribute("id")));
+});
+
+// Add event listener to the start button
+startButton.addEventListener("click", () => {
     disableStart();
     enableBtns();
     clearFails();
     clearMainDiv();
-    genWrdBlocks();
+    genWordBlocks();
     setTries();
 });
 
+// Function to handle letter button clicks
 function play(id) {
     if (tries > 0) {
-        let match = word.includes(id);
-        let res = 1;
-        if (match) {
+        const button = document.querySelector(`#${id}`);
+        const isMatch = currentWord.includes(id);
+        let revealed = false;
+
+        if (isMatch) {
+            // Reveal all instances of the letter
             blocks.forEach((block) => {
-                if (
-                    !block.classList.contains("visible") &&
-                    block.textContent === id &&
-                    res >= 1
-                ) {
+                if (block.textContent === id && !block.classList.contains("visible")) {
                     block.classList.add("visible");
-                    res -= 1;
+                    revealed = true;
                 }
             });
-            word.splice(word.indexOf(id), 1);
-        } else if (!match) {
-            document.querySelector(`#${id}`).classList.add("fail");
-            document.querySelector(`#${id}`).disabled = true;
+
+            // Remove all instances from currentWord to prevent further matches
+            currentWord = currentWord.filter(letter => letter !== id);
+        } else {
+            // Handle incorrect guess
+            button.classList.add("fail");
             decTries();
-            document.querySelector(
-                ".tries"
-            ).innerHTML = `${tries} out of ${totalTries} tries left`;
+            triesDiv.innerHTML = `Tries: ${tries} out of ${totalTries} tries left`;
             setImg();
         }
+
+        // Disable the button after click
+        button.disabled = true;
+        button.classList.add('disabled');
+
+        winLose();
     }
-    winLose();
 }
 
-// utility functions
+// Utility Functions
 
-// =========================================
-
+// Function to generate a random number between min and max (inclusive)
 function getRnd(min, max) {
-    let step1 = max - min + 1;
-    let step2 = Math.random() * step1;
-    let result = Math.floor(step2) + min;
-    return result;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+// Function to select a random word from the words array
 function getRndWord() {
-    let word = words[getRnd(0, words.length - 1)].split("");
-    if (word.length >= 7 && winWidth <= 768) {
+    const selectedWord = words[getRnd(0, words.length - 1)].split("");
+    if (selectedWord.length >= 7 && window.innerWidth <= 768) {
         main.style.height = "140px";
     }
-    return word;
+    return selectedWord;
 }
 
-function genWrdBlocks() {
-    word = getRndWord();
-    console.log(word);
-    dupWord = [...dupWord, ...word];
+// Function to generate word blocks in the DOM
+function genWordBlocks() {
+    currentWord = getRndWord();
+    dupWord = [...currentWord];
 
-    // create divs in dom
-    word.forEach((letter) => {
-        let div = document.createElement("div");
+    // Create divs for each letter in the word
+    currentWord.forEach((letter, index) => {
+        const div = document.createElement("div");
         div.classList.add(`main-block`);
         div.classList.add(`val-${letter}`);
-        div.innerHTML = letter;
-        main_div.appendChild(div);
+        div.setAttribute("id", `letter-${index}`);
+        div.innerHTML = "_"; // Initially hide the letters
+        mainDiv.appendChild(div);
     });
+
     blocks = document.querySelectorAll(".main-block");
 }
 
-// =========================================
-
+// Function to handle hints
 document.querySelector("#hint").addEventListener("click", hint);
 function hint() {
     if (firstTime && tries > 2) {
         openHint();
     } else if (tries > 2 && !firstTime) {
-        let arr = [];
-        blocks.forEach((block) => {
-            if (!block.classList.contains("visible")) {
-                arr.push(block);
-            }
-        });
-        arr[getRnd(0, arr.length - 1)].classList.add("visible");
-        tries = tries - 2;
-        document.querySelector(".tries").innerHTML = `tries: ${tries}`;
-        setImg();
-        winLose();
+        const hiddenBlocks = Array.from(blocks).filter(block => !block.classList.contains("visible"));
+        if (hiddenBlocks.length > 0) {
+            const randomBlock = hiddenBlocks[getRnd(0, hiddenBlocks.length - 1)];
+            const letter = randomBlock.textContent.toLowerCase();
+            play(letter);
+            tries -= 2;
+            triesDiv.innerHTML = `Tries: ${tries} out of ${totalTries} tries left`;
+            setImg();
+        }
     } else if (tries <= 2) {
         tries0();
     }
 }
 
+// Function to reset the game state
 function resetAll() {
     tries = 0;
-    document.querySelector(".tries").innerHTML = "";  // Changed this line
+    triesDiv.innerHTML = "";
     startGame.innerHTML = "Play Again";
     img.src = "./assets/images/0.png";
-    word = [];
+    currentWord = [];
     dupWord = [];
     clearFails();
     clearMainDiv();
     enableStart();
 }
 
+// Function to clear fail classes from letter buttons
 function clearFails() {
     for (let i = 97; i < 123; i++) {
-        document
-            .querySelector(`#${String.fromCharCode(i)}`)
-            .classList.remove("fail");
+        const letter = String.fromCharCode(i);
+        const button = document.querySelector(`#${letter}`);
+        if (button) {
+            button.classList.remove("fail");
+        }
     }
 }
 
+// Function to clear the main word display
 function clearMainDiv() {
-    main_div.innerHTML = "";
+    mainDiv.innerHTML = "";
+    main.style.height = ""; // Reset height
 }
 
+// Function to update the hangman image based on remaining tries
 function setImg() {
-    let percent = (tries / totalTries) * 100;
+    const percent = (tries / totalTries) * 100;
     if (percent > 71.5 && percent <= 87.75) {
         img.src = "./assets/images/1.png";
     } else if (percent > 57.25 && percent <= 71.5) {
@@ -290,53 +197,64 @@ function setImg() {
     }
 }
 
+// Function to set the initial number of tries
 function setTries() {
-    tries = word.length;
-    totalTries = word.length;
-    tries_div.innerHTML = `${tries} out of ${totalTries} tries left`;
+    tries = currentWord.length;
+    totalTries = currentWord.length;
+    triesDiv.innerHTML = `Tries: ${tries} out of ${totalTries} tries left`;
 }
 
+// Function to decrement tries
 function decTries() {
     tries -= 1;
 }
 
+// Function to disable the start button
 function disableStart() {
-    start_button.disabled = true;
-    start_button.classList.add("start-fail");
+    startButton.disabled = true;
+    startButton.classList.add("start-fail");
 }
 
+// Function to enable the start button
 function enableStart() {
-    start_button.disabled = false;
-    start_button.classList.remove("start-fail");
+    startButton.disabled = false;
+    startButton.classList.remove("start-fail");
 }
 
+// Function to disable all letter buttons and the hint button
 function disableBtns() {
-    for (let i = 97; i < 123; i++) {
-        document.querySelector(`#${String.fromCharCode(i)}`).disabled = true;
-    }
+    keyboardBtns.forEach(button => {
+        button.disabled = true;
+        button.classList.add("disabled");
+    });
     document.querySelector(".hint").disabled = true;
+    document.querySelector(".hint").classList.add("disabled");
 }
 
+// Function to enable all letter buttons and the hint button
 function enableBtns() {
-    for (let i = 97; i < 123; i++) {
-        document.querySelector(`#${String.fromCharCode(i)}`).disabled = false;
-    }
+    keyboardBtns.forEach(button => {
+        button.disabled = false;
+        button.classList.remove("disabled");
+    });
     document.querySelector(".hint").disabled = false;
+    document.querySelector(".hint").classList.remove("disabled");
 }
 
+// Function to check win or lose conditions
 function winLose() {
     if (tries === 0) {
-    secretWord.innerHTML = `secret word was "${dupWord.join("")}"`;
-    openLose();
-    setTimeout(() => {
-        document.querySelector(".tries").innerHTML = "";  // Add this line
-        closeLose();
-        resetAll();
-        disableBtns();
-    }, 2500);
-} else if (
-        document.querySelectorAll(".visible").length === dupWord.length
-    ) {
+        // Player has lost
+        secretWord.innerHTML = `Secret word was "${dupWord.join("")}"`;
+        openLose();
+        setTimeout(() => {
+            hideTries();
+            closeLose();
+            resetAll();
+            disableBtns();
+        }, 2500);
+    } else if (document.querySelectorAll(".visible").length === dupWord.length) {
+        // Player has won
         confetti({
             particleCount: 200,
             scalar: 1.175,
@@ -354,66 +272,86 @@ function winLose() {
             origin: { x: 1 },
         });
         openWin();
-        resetAll();
-        disableBtns();
         setTimeout(() => {
+            hideTries();
+            closeWin();
+            resetAll();
+            disableBtns();
+        }, 3000);
+    }
+}
+
+// Function to hide the tries div
+function hideTries() {
     const triesElement = document.querySelector(".tries");
     if (triesElement) {
-        triesElement.style.display = "none"; // Hide the element
-    }
-    closeWin();
-}, 3000);
-
+        triesElement.style.display = "none";
     }
 }
 
 // ================== Modal Functions =====================
-// Modal Toggle
+
+// Function to open hint modal
 function openHint() {
     hintModal.showModal();
 }
+
+// Function to close hint modal
 document.querySelector("#close-hint").addEventListener("click", closeHint);
 function closeHint() {
     hintModal.close();
 }
+
+// Function to open tries0 modal
 function openTries0() {
     tries0Modal.showModal();
 }
+
+// Function to close tries0 modal
 function closeTries0() {
     tries0Modal.close();
 }
+
+// Function to open win modal
 function openWin() {
     winModal.showModal();
 }
+
+// Function to close win modal
 function closeWin() {
     winModal.close();
 }
+
+// Function to open lose modal
 function openLose() {
     loseModal.showModal();
 }
+
+// Function to close lose modal
 function closeLose() {
     loseModal.close();
 }
+
+// Function to open about modal
 document.querySelector("#open-about").addEventListener("click", () => {
     aboutModal.showModal();
 });
+
+// Function to close about modal
 document.querySelector("#close-about").addEventListener("click", () => {
     aboutModal.close();
 });
-// Modal Actions
 
-document
-    .querySelector("#take-hint")
-    .addEventListener("click", setFirtTimeFalse);
-function setFirtTimeFalse() {
-    /** on taking hint */
+// Function to handle taking a hint
+document.querySelector("#take-hint").addEventListener("click", setFirstTimeFalse);
+function setFirstTimeFalse() {
     firstTime = false;
     closeHint();
     hint();
 }
 
+// Function to handle when player has not enough tries
 function tries0() {
-    // when player has not enough tries
     openTries0();
     setTimeout(() => {
         closeTries0();
