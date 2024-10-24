@@ -49,7 +49,7 @@ disableBtns();
 // Add event listeners to letter buttons
 keyboardBtns.forEach((key) => {
     const letter = key.getAttribute("id").toLowerCase(); // Ensure lowercase
-    key.addEventListener("click", (event) => play(letter, event));
+    key.addEventListener("click", () => play(letter));
 });
 
 // Add event listener to the start button
@@ -63,19 +63,20 @@ startButton.addEventListener("click", () => {
 });
 
 // Function to handle letter button clicks
-function play(letter, event) {
+function play(letter) {
     if (tries > 0) {
-        const button = event.target;
+        const button = document.querySelector(`#${letter}`);
+        if (!button) {
+            console.error(`Button with ID '${letter}' not found.`);
+            return;
+        }
 
         const isMatch = originalWord.includes(letter);
 
         if (isMatch) {
             // Reveal all instances of the letter
             blocks.forEach((block) => {
-                if (
-                    block.getAttribute('data-letter') === letter &&
-                    !block.classList.contains("visible")
-                ) {
+                if (block.getAttribute('data-letter') === letter && !block.classList.contains("visible")) {
                     block.classList.add("visible");
                     block.textContent = letter.toUpperCase(); // Show the letter
                 }
@@ -145,7 +146,7 @@ function hint() {
         if (hiddenBlocks.length > 0) {
             const randomBlock = hiddenBlocks[getRnd(0, hiddenBlocks.length - 1)];
             const letter = randomBlock.getAttribute('data-letter');
-            play(letter, { target: document.querySelector(`#${letter}`) });
+            play(letter);
             tries -= 2;
             if (tries < 0) tries = 0;
             triesDiv.innerHTML = `Tries: ${tries} out of ${totalTries} tries left`;
@@ -233,7 +234,7 @@ function disableBtns() {
         button.disabled = true;
         button.classList.add("disabled");
     });
-    const hintButton = document.querySelector(".hint");
+    const hintButton = document.querySelector("#hint");
     if (hintButton) {
         hintButton.disabled = true;
         hintButton.classList.add("disabled");
@@ -246,7 +247,7 @@ function enableBtns() {
         button.disabled = false;
         button.classList.remove("disabled");
     });
-    const hintButton = document.querySelector(".hint");
+    const hintButton = document.querySelector("#hint");
     if (hintButton) {
         hintButton.disabled = false;
         hintButton.classList.remove("disabled");
