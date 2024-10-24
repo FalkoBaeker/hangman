@@ -326,14 +326,15 @@ function enableBtns() {
 
 function winLose() {
     if (tries === 0) {
-        secretWord.innerHTML = `secret word was "${dupWord.join("")}"`;
-        openLose();
-        setTimeout(() => {
-            closeLose();
-            resetAll();
-            disableBtns();
-        }, 2500);
-    } else if (
+    secretWord.innerHTML = `secret word was "${dupWord.join("")}"`;
+    openLose();
+    setTimeout(() => {
+        document.querySelector(".tries").innerHTML = "";  // Add this line
+        closeLose();
+        resetAll();
+        disableBtns();
+    }, 2500);
+} else if (
         document.querySelectorAll(".visible").length === dupWord.length
     ) {
         confetti({
@@ -356,8 +357,9 @@ function winLose() {
         resetAll();
         disableBtns();
         setTimeout(() => {
-            closeWin();
-        }, 3000);
+    document.querySelector(".tries").innerHTML = "";  // Add this line
+    closeWin();
+}, 3000);
     }
 }
 
